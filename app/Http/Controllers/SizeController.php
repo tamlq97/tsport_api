@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Size;
+use App\Models\Size;
 use Illuminate\Http\Request;
 
 class SizeController extends Controller
@@ -31,7 +31,7 @@ class SizeController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Size  $size
+     * @param  \App\Models\Size  $size
      * @return \Illuminate\Http\Response
      */
     public function show(Size $size)
@@ -43,7 +43,7 @@ class SizeController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Size  $size
+     * @param  \App\Models\Size  $size
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Size $size)
@@ -54,7 +54,7 @@ class SizeController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Size  $size
+     * @param  \App\Models\Size  $size
      * @return \Illuminate\Http\Response
      */
     public function destroy(Size $size)

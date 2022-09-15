@@ -1,8 +1,8 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
-use App\Http\Resources\Product\ProductCollection;
+use App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -18,25 +18,25 @@ class Product extends Model
 
     public function colors()
     {
-        return $this->hasMany('App\ColorProduct', 'product_id', 'id');
-        // return $this->belongsToMany('App\Color');
+        return $this->hasMany('App\Models\ColorProduct', 'product_id', 'id');
+        // return $this->belongsToMany('App\Models\Color');
     }
 
     public function supplier()
     {
-        return $this->belongsTo('App\Supplier', 'supplier_id', 'id');
+        return $this->belongsTo('App\Models\Supplier', 'supplier_id', 'id');
     }
 
     public function categories()
     {
-        return $this->belongsToMany('App\SubCategory', 'product_category', 'product_id', 'sub_category_id');
+        return $this->belongsToMany('App\Models\SubCategory', 'product_category', 'product_id', 'sub_category_id');
     }
 
     public function mainCate()
     {
         return $this->hasOneThrough(
-            'App\Category',
-            'App\SubCategory',
+            'App\Models\Category',
+            'App\Models\SubCategory',
             'category_id',
             'id',
             'category_id',
@@ -45,13 +45,13 @@ class Product extends Model
     }
     public function pictures()
     {
-        return $this->hasMany("App\ColorProductPicture", 'product_id', 'id');
-        return $this->hasManyThrough('App\Color', 'App\ColorProductPicture', 'color_id', 'product_id', 'id', 'id');
+        return $this->hasMany("App\Models\ColorProductPicture", 'product_id', 'id');
+        return $this->hasManyThrough('App\Models\Color', 'App\Models\ColorProductPicture', 'color_id', 'product_id', 'id', 'id');
     }
 
     public function category()
     {
-        return $this->belongsTo('App\SubCategory');
+        return $this->belongsTo('App\Models\SubCategory');
     }
 
     public static function store($credentials)
@@ -67,7 +67,7 @@ class Product extends Model
     public static function updateColorProduct($credentials, $product)
     {
         $prodPath = storage_path('app/public/products/' . $product->id);
-        $color = \App\ColorProduct::find($credentials['color_name']['id']);
+        $color = Models\ColorProduct::find($credentials['color_name']['id']);
         $colorPath = storage_path('app/public/products/' . $product->id . '/colors/' . $color->id);
         if (File::exists($prodPath) && File::exists($colorPath)) {
             $filesProdInStorage = File::allFiles($colorPath);
@@ -90,7 +90,7 @@ class Product extends Model
 
         $sizesID = [];
         foreach ($credentials['size'] as $key => $value) {
-            \App\ColorSize::updateOrCreate(['name' => $value['name'], 'color_id' => $color->id]);
+            Models\ColorSize::updateOrCreate(['name' => $value['name'], 'color_id' => $color->id]);
         }
     }
 

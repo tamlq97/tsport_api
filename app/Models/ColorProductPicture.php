@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -69,7 +69,7 @@ class ColorProductPicture extends Model
 
     public function product()
     {
-        return $this->belongsTo('App\Product','product_id','id');
+        return $this->belongsTo('App\Models\Product','product_id','id');
     }
     /**
      * Upload file to the server
@@ -85,7 +85,7 @@ class ColorProductPicture extends Model
         $full_name = $name . '.' . $extension;
 
         return Storage::putFileAs($path, $file, $full_name);
-        
+
     }
     public function storeFile($file,$product_id,$color_id,$type,$name,$extension)
     {

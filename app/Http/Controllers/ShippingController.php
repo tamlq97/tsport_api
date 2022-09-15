@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Shipping;
+use App\Models\Shipping;
 use Illuminate\Http\Request;
 
 class ShippingController extends Controller
@@ -14,7 +14,7 @@ class ShippingController extends Controller
      */
     public function index()
     {
-        return response()->json(['shippings'=>\App\Shipping::all()]);
+        return response()->json(['shippings'=> \App\Models\Shipping::all()]);
     }
 
     /**
@@ -31,7 +31,7 @@ class ShippingController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Shipping  $shipping
+     * @param  \App\Models\Shipping  $shipping
      * @return \Illuminate\Http\Response
      */
     public function show(Shipping $shipping)
@@ -43,7 +43,7 @@ class ShippingController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Shipping  $shipping
+     * @param  \App\Models\Shipping  $shipping
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Shipping $shipping)
@@ -54,7 +54,7 @@ class ShippingController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Shipping  $shipping
+     * @param  \App\Models\Shipping  $shipping
      * @return \Illuminate\Http\Response
      */
     public function destroy(Shipping $shipping)

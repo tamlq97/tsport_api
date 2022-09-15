@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth_Api;
 
 use App\Http\Controllers\Controller;
-use App\User;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Gate;
@@ -16,7 +16,7 @@ class AuthController extends Controller
      * Create a new AuthController instance.
      *
      * @return void
-     
+
      */
     public function __construct()
     {

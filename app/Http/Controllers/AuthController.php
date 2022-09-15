@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -53,7 +52,7 @@ class AuthController extends Controller
         ]);
         $credentials['password'] = Hash::make($credentials['password']);
         $fullname = $credentials['fname'] . ' ' . $credentials['lname'];
-        $user = \App\User::create([
+        $user = \App\Models\User::create([
             'email' => $credentials['email'],
             'name' => $fullname,
             'password' => $credentials['password']

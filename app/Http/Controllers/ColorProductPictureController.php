@@ -2,16 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\ColorProductPicture;
 use App\Http\Resources\Product\Color\Picture\PictureCollection;
-use App\Product;
+use App\Models\ColorProductPicture;
+use ColorSize;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
-use App\Http\Resources\Product\Product as ProductResource;
-use ColorSize;
-use Illuminate\Support\Facades\DB;
 
 class ColorProductPictureController extends Controller
 {
@@ -84,7 +79,7 @@ class ColorProductPictureController extends Controller
      */
     public function show(Request $request, $product_id, $color_id)
     {
-        $productPictures = \App\ColorProductPicture::where('color_product_pictures.color_id', '=', $color_id)
+        $productPictures = \App\Models\ColorProductPicture::where('color_product_pictures.color_id', '=', $color_id)
             ->where('color_product_pictures.product_id', '=', $product_id)
             ->get();
         return new PictureCollection($productPictures);
@@ -164,7 +159,7 @@ class ColorProductPictureController extends Controller
             }
 
             foreach ($credentials['size'] as $key => $size) {
-                \App\ColorSize::updateOrCreate([
+                \App\Models\ColorSize::updateOrCreate([
                     'color_id' => $color_id, 'name' => $size['name'],
                 ], ['color_id' => $color_id, 'name' => $size['name'], 'quantity' => 0]);
             }
@@ -206,7 +201,7 @@ class ColorProductPictureController extends Controller
             }
 
             foreach ($credentials['size'] as $key => $value) {
-                \App\ColorSize::updateOrCreate(
+                \App\Models\ColorSize::updateOrCreate(
                     ['name' => $value['name'], 'color_id' => $color_id],
                     ['name' => $value['name'], 'color_id' => $color_id, 'quantity' => 0]
                 );

@@ -1,8 +1,7 @@
 <?php
 
-use App\Product;
+use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Route;
 
 /*

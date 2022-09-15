@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\UserDetail;
+use App\Models\UserDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Log;
 
 class UserDetailController extends Controller
 {

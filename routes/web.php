@@ -1,9 +1,9 @@
 <?php
 
-use App\Category;
-use App\Color;
-use App\Product;
-use Illuminate\Http\Request;
+use App\Models\Order;
+use App\Models\Product;
+use App\Models\Supplier;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,9 +16,6 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-use App\Supplier;
-use Illuminate\Support\Facades\File;
-use App\Order;
 
 
 function generateRandomString($length = 10)
@@ -55,7 +52,7 @@ Route::get('/product1', function () {
 
 Route::get('/products/{product_id}/colors/{color_id}', 'ColorProductPictureController@show');
 Route::get('/{product}', function (Product $product) {
-    // $ids = \App\SubCategory::select('id')->where('category_id', 1)->get();
+    // $ids = \App\Models\SubCategory::select('id')->where('category_id', 1)->get();
     $product->load('categories');
     $ids = [];
     foreach ($product->categories as $v) {

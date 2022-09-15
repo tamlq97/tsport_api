@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers\Home;
 
-use App\Category;
-use App\Http\Resources\Product\Product as ProductResource;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Product\Product as ProductResource;
 use App\Http\Resources\Product\ProductCollection;
-use App\Product;
-use Carbon\Carbon;
+use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -24,7 +20,7 @@ class ProductController extends Controller
         $length = $request->length;
         $category_name = $request->category_name;
         $type = $request->type;
-        $cateParent = \App\Category::where('name', $type)->first();
+        $cateParent = \App\Models\Category::where('name', $type)->first();
         $size = $request->size_name;
         $key = $request->key ? explode('__', $request->key) : ['id','desc']; //eg: price_asc
         $query = ['length' => $length, 'category_name' => $category_name, 'parentID' => $cateParent->id, 'size' => $size, 'key' => $key];
@@ -55,7 +51,7 @@ class ProductController extends Controller
         return new ProductCollection($products);
     }
 
-    
+
     public function filterProductsBySize($query)
     {
         $products = Product::select('products.*')
@@ -117,7 +113,7 @@ class ProductController extends Controller
         $length = $request->length;
         $category_name = $request->category_name;
         $type = $request->type;
-        $cateParent = \App\Category::where('name', $type)->first();
+        $cateParent = \App\Models\Category::where('name', $type)->first();
         $size = $request->size_name;
         $query = ['length' => $length, 'category_name' => $category_name, 'parentID' => $cateParent->id, 'size' => $size];
 

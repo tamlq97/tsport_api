@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Kalnoy\Nestedset\NodeTrait;
@@ -107,7 +107,7 @@ class Category extends Model
 
     public function cateChildren()
     {
-        return $this->hasMany('App\SubCategory');
+        return $this->hasMany('App\Models\SubCategory');
     }
 
     public function products()
@@ -122,6 +122,6 @@ class Category extends Model
 
     public function product()
     {
-        return $this->hasOneThrough('App\Product', 'App\SubCategory');
+        return $this->hasOneThrough('App\Models\Product', 'App\Models\SubCategory');
     }
 }

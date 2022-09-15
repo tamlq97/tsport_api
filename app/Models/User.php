@@ -1,8 +1,7 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -64,16 +63,16 @@ class User extends Authenticatable implements JWTSubject
 
     public function supplier()
     {
-        return $this->hasOne("App\Supplier", 'user_id', 'id');
+        return $this->hasOne("App\Models\Supplier", 'user_id', 'id');
     }
 
     public function profile()
     {
-        return $this->hasOne('App\UserDetail', 'user_id', 'id');
+        return $this->hasOne('App\Models\UserDetail', 'user_id', 'id');
     }
 
     public function customer()
     {
-        return $this->hasOne('App\Customer', 'user_id', 'id');
+        return $this->hasOne('App\Models\Customer', 'user_id', 'id');
     }
 }
