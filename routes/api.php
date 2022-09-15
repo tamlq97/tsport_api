@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,9 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('/getAllProducts1', function () {
-    return Product::paginate(10);
-});
 Route::group([
     'middleware' => 'api',
     'prefix' => 'auth'
@@ -35,14 +31,12 @@ Route::group([
         Route::post('me1', 'AuthController@me1');
     });
 });
-Route::get('/demo', function (Request $request) {
-    return (int) $request->user('api')->hasRole('admin');
-});
+
 Route::get('shippings', 'ShippingController@index');
 Route::get('payments', 'PaymentController@index');
 
 
-Route::apiResource('categories', 'CategoryController');
+Route::apiResource('categories', \App\Http\Controllers\CategoryController::class);
 Route::group([
     'namespace' => 'Home',
 ], function () {
@@ -88,9 +82,7 @@ Route::group(['middleware' => 'auth.api'], function () {
 
     Route::apiResource('users', 'UserController');
     Route::get('rules', 'RuleController@index');
-    // Route::apiResource('pictures', 'ProductPictureController');
     Route::apiResource('roles', 'RoleController');
-    // Route::apiResource('products', 'ProductController');
     Route::get('products', 'ProductController@index');
     Route::get('products/{product}', 'ProductController@show');
     Route::post('products', 'ProductController@store');
@@ -106,7 +98,6 @@ Route::group(['middleware' => 'auth.api'], function () {
         'ProductController@deleteItems'
     );
     Route::post('colorpicture/deleteSelectedItem', 'ColorProductPictureController@deleteSelectedItem');
-    // Route::apiResource('suppliers', 'SupplierController');
 
     Route::get('suppliers', 'SupplierController@index');
     Route::get('suppliers/{userID}', "SupplierController@show");
