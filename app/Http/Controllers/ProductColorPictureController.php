@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\File;
 
 class ProductColorPictureController extends Controller
 {
-    public function index(Product $product, Color $color) {
+    public function index(Product $product, Color $color): PictureCollection
+    {
         $productPictures = \App\Models\ColorProductPicture::where('color_product_pictures.color_id', '=', $color->id)
             ->where('color_product_pictures.product_id', '=', $product->id)
             ->get();

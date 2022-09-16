@@ -11,9 +11,9 @@ class SizeListController extends Controller
      * Handle the incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): \Illuminate\Database\Eloquent\Collection
     {
         return Size::all();
     }

@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Notification;
 
 class OrderController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): OrderCollection
     {
         if (Gate::denies('access_order_manager')) abort(401);
         $orders = Order::all();
@@ -29,7 +29,7 @@ class OrderController extends Controller
         return new OrderCollection($orders);
     }
 
-    public function confirmOrder(Request $request, $madh)
+    public function confirmOrder(Request $request, $madh): \Illuminate\Http\JsonResponse
     {
         if (Gate::denies('confirm_order')) abort(401);
         $order = Order::where('madh', $madh)->first();
@@ -38,7 +38,7 @@ class OrderController extends Controller
         Mail::to($order->customer->email)->send(new OrderConfirmed($order));
         return response()->json(['message' => 'Success sent confirm order email to customer.']);
     }
-    public function outOfStock(Request $request, $madh)
+    public function outOfStock(Request $request, $madh): \Illuminate\Http\JsonResponse
     {
         if (Gate::denies('order_out_of_stock')) abort(401);
         $order = Order::where('madh', $madh)->first();
@@ -47,7 +47,7 @@ class OrderController extends Controller
         return response()->json(['message' => 'Success sent notify order out of stock mail to customer.']);
     }
 
-    public function fetchOrdersByUserID($uid)
+    public function fetchOrdersByUserID($uid): \Illuminate\Http\JsonResponse
     {
         $orders = Order::where('user_id', $uid)->get();
         $response = [];
@@ -68,7 +68,7 @@ class OrderController extends Controller
                     'storage/products/' . $data['prodID'] . '/colors/' .
                         $colorID . '/' . $img['type'] . '/' . $img['src']
                 );
-                array_push($response, $data);
+                $response[] = $data;
             }
         }
         return response()->json(['orders' => $response]);
@@ -77,9 +77,9 @@ class OrderController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         if (Gate::denies('create_order')) abort(401);
         $data = $request->all();
@@ -90,8 +90,8 @@ class OrderController extends Controller
             'order_date' =>  Carbon::now()->toDateString(),
         ]);
         $mailData = [];
-        array_push($mailData, $order);
-        array_push($mailData, $data);
+        $mailData[] = $order;
+        $mailData[] = $data;
         foreach ($data['products'] as $prod) {
             $orderDetails = \App\Models\OrderDetail::create([
                 'order_id' => $order->id,
@@ -107,7 +107,7 @@ class OrderController extends Controller
                 ->where('name', $prod['color']['sizes']['name'])
                 ->where('quantity', '>', 0)
                 ->decrement('quantity', $prod['color']['sizes']['quantity']);
-            array_push($mailData, $orderDetails);
+            $mailData[] = $orderDetails;
         }
         $data['order_date'] = $order->created_at;
         $data['madh'] = $order->madh;

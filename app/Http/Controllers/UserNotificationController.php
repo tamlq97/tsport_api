@@ -13,7 +13,7 @@ class UserNotificationController extends Controller
         $user->unreadNotifications->where('id',$notifyID)->markAsRead();
         return $this->notifications();
     }
-    public function delete(User $user,$notifyID)
+    public function delete(User $user,$notifyID): \Illuminate\Http\JsonResponse
     {
         DB::raw("delete from notifications where notifications.id = '".$notifyID."'");
         return response()->json(['message'=>"Successful delete notify"]);

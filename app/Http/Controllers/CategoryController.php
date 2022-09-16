@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Resources\Category\CategoryCollection;
 use App\Models\Category;
 use App\Models\SubCategory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 
 class CategoryController extends Controller
@@ -13,9 +15,10 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return CategoryCollection
      */
-    public function index(Request $request)
+    public function index(Request $request): CategoryCollection
     {
         if ($request->showData) {
             return new CategoryCollection(Category::with('cateChildren')->get());
@@ -55,7 +58,7 @@ class CategoryController extends Controller
         return new CategoryCollection($data);
     }
 
-    public function fetchAll()
+    public function fetchAll(): array
     {
         if (Gate::denies('access_category')) return abort(401);
         $data = Category::with('cateChildren')->get();
@@ -67,7 +70,7 @@ class CategoryController extends Controller
             $group = [];
             foreach ($c->cateChildren as $key => $child) {
                 if ($child->parent_id == null) {
-                    array_push($group, $child);
+                    $group[] = $child;
                 }
             }
             $d['group'] = $group;
@@ -78,7 +81,7 @@ class CategoryController extends Controller
                 // $d['children'] = $gr->descendants;
                 // array_push($d,$gr->descendants);
             }
-            array_push($res, $d);
+            $res[] = $d;
         }
         return $res;
     }
@@ -86,10 +89,10 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $validator = $request->validate([
             'name' => 'required',
@@ -110,7 +113,7 @@ class CategoryController extends Controller
         return response()->json(['message' => "Successful create category."]);
     }
 
-    public function storeCate(Request $request)
+    public function storeCate(Request $request): JsonResponse
     {
         if (Gate::denies('create_category')) return abort(401);
         if ($request->parent_name) {
@@ -131,10 +134,10 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
+     * @param Category $category
+     * @return Response
      */
-    public function show(Category $category)
+    public function show(Category $category): Response
     {
         //
     }
@@ -142,11 +145,11 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Category $category
+     * @return JsonResponse
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, Category $category): JsonResponse
     {
         if(Gate::denies('edit_category')) return abort(401);
         $validator = $request->validate([
@@ -159,10 +162,10 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
+     * @param Category $category
+     * @return JsonResponse
      */
-    public function destroy(Category $category)
+    public function destroy(Category $category): JsonResponse
     {
         if(Gate::denies('delete_category')) return abort(401);
         $category->delete();

@@ -6,7 +6,10 @@ use App\Http\Requests\Role\RoleStoreRequest;
 use App\Http\Requests\Role\RoleUpdateRequest;
 use App\Http\Resources\Role\RoleCollection;
 use App\Http\Resources\Role\Role as RoleResource;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Spatie\Permission\Models\Role;
 
@@ -15,9 +18,10 @@ class RoleController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return RoleCollection|Collection|Response
      */
-    public function index(Request $request)
+    public function index(Request $request): \Illuminate\Database\Eloquent\Collection|Response|RoleCollection
     {
         if (Gate::denies('access_role')) {
             return abort(401);
@@ -41,10 +45,10 @@ class RoleController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param RoleStoreRequest $request
+     * @return Response|RoleResource
      */
-    public function store(RoleStoreRequest $request)
+    public function store(RoleStoreRequest $request): Response|RoleResource
     {
         if (Gate::denies('create_role')) {
             return abort(401);
@@ -57,10 +61,10 @@ class RoleController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Role $role
+     * @return RoleResource
      */
-    public function show(Role $role)
+    public function show(Role $role): RoleResource
     {
         if (Gate::denies('view_role')) {
             return abort(401);
@@ -71,11 +75,11 @@ class RoleController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param RoleUpdateRequest $request
+     * @param Role $role
+     * @return RoleResource
      */
-    public function update(RoleUpdateRequest $request, Role $role)
+    public function update(RoleUpdateRequest $request, Role $role): RoleResource
     {
         if (Gate::denies('edit_role')) {
             return abort(401);
@@ -88,10 +92,10 @@ class RoleController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Role $role
+     * @return JsonResponse
      */
-    public function destroy(Role $role)
+    public function destroy(Role $role): \Illuminate\Http\JsonResponse
     {
         if (Gate::denies('delete_role')) {
             return abort(401);

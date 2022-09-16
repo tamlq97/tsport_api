@@ -4,19 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\Supplier\Supplier as SupplierResource;
 use App\Models\Supplier;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 
 class SupplierController extends Controller
 {
-    public static $imageExtensions = ['jpeg', 'jpeg', 'png', 'gif', 'webp'];
+    public static array $imageExtensions = ['jpeg', 'jpeg', 'png', 'gif', 'webp'];
+
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Collection|AnonymousResourceCollection
      */
-    public function index(Request $request)
+    public function index(Request $request): \Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         if (Gate::denies("access_supplier")) return abort(401);
 
@@ -49,7 +53,7 @@ class SupplierController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
     public function store(Request $request)
     {
@@ -94,11 +98,10 @@ class SupplierController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Supplier  $supplier
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Supplier $supplier)
+    public function show(Supplier $supplier): \Illuminate\Http\JsonResponse
     {
-        return $supplier;
         if (Gate::denies("view_supplier")) return abort(401);
         return response()->json(['data' => 'something']);
         // $supplier = Supplier::where('user_id', $userID)->get();
@@ -115,10 +118,10 @@ class SupplierController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Supplier  $supplier
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\Supplier $supplier
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
-    public function update(Request $request, $supplier)
+    public function update(Request $request, Supplier $supplier): \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
     {
         if (Gate::denies("edit_supplier") && Gate::denies('delete_user')) return abort(401);
         $validator = $request->validate([
@@ -132,33 +135,32 @@ class SupplierController extends Controller
             'email' => 'required|email',
             'logo' => 'required'
         ]);
-        $supplier1 = Supplier::where('supplier_code', $supplier)->first();
         if (is_file($validator['logo'])) {
             $name = $validator['logo']->getClientOriginalName();
             $extension = $validator['logo']->getClientOriginalExtension();
             $type = $this->getType($extension);
 
-            if (!File::exists(storage_path('app/public/users/' . $supplier1->user_id . '/suppliers/' . $supplier1->id . '/' . $type . '/' . $name))) {
-                $validator['logo']->storeAs('users/' . $supplier1->user_id . '/suppliers/' . $supplier1->id . '/' . $type . '/', $name);
+            if (!File::exists(storage_path('app/public/users/' . $supplier->user_id . '/suppliers/' . $supplier->id . '/' . $type . '/' . $name))) {
+                $validator['logo']->storeAs('users/' . $supplier->user_id . '/suppliers/' . $supplier->id . '/' . $type . '/', $name);
             }
-            $validator['logo'] = asset('storage/users/' . $supplier1->user_id . '/suppliers/' . $supplier1->id . '/' . $type . '/' . $name);;
+            $validator['logo'] = asset('storage/users/' . $supplier->user_id . '/suppliers/' . $supplier->id . '/' . $type . '/' . $name);;
         }
-        $supplier1->update($validator);
-        return response()->json(['message' => 'Successful update supplier.', 'supplier' => $supplier1]);
+        $supplier->update($validator);
+        return response()->json(['message' => 'Successful update supplier.', 'supplier' => $supplier]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Supplier  $supplier
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\Supplier $supplier
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
-    public function destroy(Request $request, $supplier)
+    public function destroy(Request $request, Supplier $supplier): \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
     {
         if (Gate::denies("delete_supplier") && Gate::denies("delete_user")) return abort(401);
         $sup = Supplier::where('supplier_code', $supplier)->first();
         $sup->user->removeRole('supplier');
-        File::delete(storage_path('app/users/suppliers/' . $sup->user_id . ''));
+        File::delete(storage_path('app/users/suppliers/' . $sup->user_id));
         $sup->delete();
         return response()->json(['message' => 'Successful delete item.']);
     }

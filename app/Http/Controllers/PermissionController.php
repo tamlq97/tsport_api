@@ -7,6 +7,7 @@ use App\Http\Requests\Permission\PermissionUpdateRequest;
 use App\Http\Resources\Permission\PermissionCollection;
 use App\Http\Resources\Permission\Permission as PermissionResource;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Spatie\Permission\Models\Permission;
 
@@ -15,9 +16,10 @@ class PermissionController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return PermissionCollection|\Illuminate\Database\Eloquent\Collection
      */
-    public function index(Request $request)
+    public function index(Request $request): \Illuminate\Database\Eloquent\Collection|PermissionCollection
     {
         if (Gate::denies('access_permission')) {
             return abort(401);
@@ -41,11 +43,11 @@ class PermissionController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param PermissionStoreRequest $request
+     * @return Response|PermissionResource
      */
 
-    public function store(PermissionStoreRequest $request)
+    public function store(PermissionStoreRequest $request): Response|PermissionResource
     {
         if (Gate::denies('create_permission')) {
             return abort(401);
@@ -57,10 +59,10 @@ class PermissionController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Permission $permission
+     * @return Response|PermissionResource
      */
-    public function show(Permission $permission)
+    public function show(Permission $permission): Response|PermissionResource
     {
         if (Gate::denies('view_permission')) {
             return abort(401);
@@ -71,11 +73,11 @@ class PermissionController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param PermissionUpdateRequest $request
+     * @param Permission $permission
+     * @return Response|PermissionResource
      */
-    public function update(PermissionUpdateRequest $request, Permission $permission)
+    public function update(PermissionUpdateRequest $request, Permission $permission): Response|PermissionResource
     {
         if (Gate::denies('edit_permission')) {
             return abort(401);
@@ -87,10 +89,10 @@ class PermissionController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Permission $permission
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Permission $permission)
+    public function destroy(Permission $permission): \Illuminate\Http\JsonResponse
     {
         if (Gate::denies('delete_permission')) {
             return abort(401);

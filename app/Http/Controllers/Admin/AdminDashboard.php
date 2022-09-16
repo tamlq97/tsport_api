@@ -8,21 +8,37 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\Supplier;
 use Carbon\Carbon;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 
 class AdminDashboard extends Controller
 {
-    public function index()
+    /**
+     * @return Application|Factory|View|JsonResponse
+     */
+    public function index(): View|Factory|JsonResponse|Application
     {
         $data = [];
         $data['products'] = Product::count();
         $data['orders'] = Order::count();
         $data['customers'] = Customer::count();
         $data['suppliers'] = Supplier::count();
-        return response()->json(['data' => $data]);
+        if(request()->acceptsJson()) {
+            return response()->json(['data' => $data]);
+        }
+
+        return view('welcome');
     }
-    public function filterCustomerBtwDate(Request $request)
+
+    /**
+     * @param Request $request
+     * @return Factory|View|Application|JsonResponse
+     */
+    public function filterCustomerBtwDate(Request $request): Application|Factory|View|JsonResponse
     {
         $customers = DB::table('customers')
             ->whereBetween('created_at', [Carbon::now()->subDays(30), Carbon::now()]);
@@ -31,9 +47,14 @@ class AdminDashboard extends Controller
                 ->whereBetween('created_at', [$request->from, $request->to]);
         }
         $customers = $customers->paginate($request->length);
-        return response()->json(['customers' => $customers]);
+        if($request->acceptsJson()) {
+            return response()->json(['customers' => $customers]);
+        }
+
+        return view("welcome");
     }
-    public function filterSupplierBtwDate(Request $request)
+
+    public function filterSupplierBtwDate(Request $request): Application|Factory|View|JsonResponse
     {
         $suppliers = DB::table('suppliers')
             ->whereBetween('created_at', [Carbon::now()->subDays(30), Carbon::now()]);
@@ -42,15 +63,23 @@ class AdminDashboard extends Controller
                 ->whereBetween('created_at', [$request->from, $request->to]);
         }
         $suppliers = $suppliers->paginate($request->length);
-        return response()->json(['suppliers' => $suppliers]);
+        if($request->acceptsJson()) {
+            return response()->json(['suppliers' => $suppliers]);
+        }
+        return view('welcome');
     }
-    public function filterOrderBtwDate(Request $request)
+
+    public function filterOrderBtwDate(Request $request): Factory|Application|View|JsonResponse
     {
         $orders = DB::table('orders')
             ->join('customers', 'customers.id', '=', 'orders.user_id')
             ->whereBetween('orders.created_at', [$request->from, $request->to])
             ->select('orders.*', 'customers.email as customer_email');
         $orders = $orders->paginate($request->length);
-        return response()->json(['orders' => $orders]);
+        if($request->acceptsJson()) {
+            return response()->json(['orders' => $orders]);
+        }
+
+        return view('welcome');
     }
 }

@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Resources\Product\Product as ProductResource;
 use App\Http\Resources\Product\ProductCollection;
 use App\Models\ColorProduct;
 use App\Models\ColorSize;
 use App\Models\Product;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 
@@ -30,9 +32,9 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return ProductCollection|\Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function index(Request $request)
+    public function index(Request $request): \Illuminate\Contracts\Pagination\LengthAwarePaginator|ProductCollection
     {
         if (Gate::denies("access_product")) return abort(401);
         if ($request->showData) {
@@ -72,10 +74,10 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return JsonResponse|Response
      */
-    public function store(\Illuminate\Http\Request $request)
+    public function store(Request $request): Response|JsonResponse
     {
         if (Gate::denies("create_product")) return abort(401);
         $validateFields = [
@@ -110,7 +112,7 @@ class ProductController extends Controller
 
         $cateID = [];
         foreach ($credentials['cate_name'] as $key => $value) {
-            array_push($cateID, $value['id']);
+            $cateID[] = $value['id'];
         }
         $product->categories()->sync($cateID);
         return response()->json(['message' => "Successful create product."]);
@@ -119,10 +121,10 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Models\Product $product
-     * @return \Illuminate\Http\Response
+     * @param Product $product
+     * @return ProductResource
      */
-    public function show(Product $product)
+    public function show(Product $product): ProductResource
     {
         if (Gate::denies("view_product")) return abort(401);
         $product->load(['category', 'colors.sizes', 'categories', 'colors.pictures']);
@@ -132,11 +134,11 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Product $product
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Product $product
+     * @return JsonResponse|Response
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, Product $product): Response|JsonResponse
     {
         if (Gate::denies("edit_product")) return abort(401);
 
@@ -164,7 +166,7 @@ class ProductController extends Controller
 
         $cateID = [];
         foreach ($credentials['cate_name'] as $key => $value) {
-            array_push($cateID, $value['id']);
+            $cateID[] = $value['id'];
         }
         $product->categories()->sync($cateID);
         foreach ($credentials['color_name'] as $key => $value) {
@@ -178,10 +180,10 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Models\Product $product
-     * @return \Illuminate\Http\Response
+     * @param Product $product
+     * @return JsonResponse
      */
-    public function destroy(Product $product)
+    public function destroy(Product $product): JsonResponse
     {
         if (Gate::denies("delete_product")) return abort(401);
         //     DB::delete("
@@ -200,30 +202,4 @@ class ProductController extends Controller
 
         return response()->json(['message' => 'Successfully product deleted.']);
     }
-
-    public function deleteItems(Request $request)
-    {
-        $items = $request->validate(['items' => 'array|required']);
-        $ids = [];
-        foreach ($items['items'] as $key => $i) {
-            array_push($ids, $i['id']);
-        }
-        Product::destroy($ids);
-        return response()->json(['message' => 'Successfully delete items.']);
-    }
-
-    public function saveQuantity(Request $request, ColorSize $colorSize)
-    {
-        if (Gate::denies('edit_product')) abort(401);
-        $colorSize->updateOrCreate(['color_id' => $request->color_id, 'name' => $request->name], ['quantity' => $request->quantity]);
-        return response()->json(['message' => "Successfully update quantity!"]);
-    }
-
-    public function updateProdStatus(Request $request, Product $product)
-    {
-        if (Gate::denies('edit_product')) abort(401);
-        $product->update(['product_available' => $request->product_available]);
-        return response()->json(['message' => "Successfully update product status!"]);
-    }
-    //
 }

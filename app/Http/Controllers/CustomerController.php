@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Gate;
 
 class CustomerController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): \Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         if (Gate::denies("access_customer")) return abort(401);
         if ($request->showData) {
@@ -37,7 +37,7 @@ class CustomerController extends Controller
         return CustomerResource::collection($query);
     }
 
-    public function update(Request $request, Customer $customer)
+    public function update(Request $request, Customer $customer): \Illuminate\Http\JsonResponse
     {
         if (Gate::denies('edit_customer')) return abort(401);
         $validator = $this->validate($request, [
@@ -73,40 +73,12 @@ class CustomerController extends Controller
         return response()->json(['message' => 'Successful update customer info.', 'customer' => $customer]);
     }
 
-    public function update1(Request $request, $customer)
-    {
-        if (Gate::denies("edit_customer")) return abort(401);
-        $validator = $request->validate([
-            'address' => 'required',
-            'city' => 'required',
-            'country' => 'required',
-            'contact_fname' => 'required',
-            'contact_lname' => 'required',
-            'phone' => 'required',
-            'email' => 'required|email',
-            'avatar' => 'required'
-        ]);
-        $customer1 = Customer::where('makh', $customer)->first();
-        if (is_file($validator['avatar'])) {
-            $name = $validator['avatar']->getClientOriginalName();
-            $extension = $validator['avatar']->getClientOriginalExtension();
-            $type = 'image';
-
-            if (!File::exists(storage_path('app/public/customers/'  . $customer1->id . '/' . $type . '/' . $name))) {
-                $validator['avatar']->storeAs('customers/' . $customer1->id . '/' . $type . '/', $name);
-            }
-            $validator['avatar'] = asset('storage/customers/' . $customer1->id . '/' . $type . '/' . $name);;
-        }
-        $customer1->update($validator);
-        return response()->json(['message' => 'Successful update supplier.']);
-    }
-
-    public function destroy(Request $request, $customer)
+    public function destroy($customer): \Illuminate\Http\JsonResponse
     {
         if (Gate::denies("delete_customer")) return abort(401);
         $cus = Customer::where('makh', $customer)->first();
         $cus->user->removeRole('customer');
-        File::delete(storage_path('app/customers/' . $cus->id . ''));
+        File::delete(storage_path('app/customers/' . $cus->id));
         $cus->delete();
         return response()->json(['message' => 'Successful delete item.']);
     }

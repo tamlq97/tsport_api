@@ -7,15 +7,17 @@ use App\Http\Resources\Product\Product as ProductResource;
 use App\Http\Resources\Product\ProductCollection;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class FrontendProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return ProductCollection
      */
-    public function getAllProducts(Request $request)
+    public function getAllProducts(Request $request): ProductCollection
     {
         $length = $request->length;
         $category_name = $request->category_name;
@@ -54,7 +56,7 @@ class FrontendProductController extends Controller
 
     public function filterProductsBySize($query)
     {
-        $products = Product::select('products.*')
+        return Product::select('products.*')
             ->join('product_category as pc', 'pc.product_id', '=', 'products.id')
             ->leftJoin('sub_categories as sc', 'sc.id', '=', 'pc.sub_category_id')
             ->join('color_products as cp', 'cp.product_id', '=', 'products.id')
@@ -65,9 +67,8 @@ class FrontendProductController extends Controller
             ->orderBy('cs.quantity', 'desc')
             ->with(['categories', 'colors.sizes', 'colors.pictures', 'colors', 'supplier'])
             ->paginate($query['length']);
-        return $products;
     }
-    public function fetchProdsByKey(Request $request)
+    public function fetchProdsByKey(Request $request): \Illuminate\Http\JsonResponse
     {
         $products = Product::where('masp', 'like', '%' . $request->key . '%')
             ->orWhere('product_name', 'like', '%' . $request->key . '%')
@@ -103,12 +104,12 @@ class FrontendProductController extends Controller
             if ($prod['discount'] && $prod['discount_available']) {
                 $data['prodPrice'] = $prod['product_price'] * ((100 - $prod['discount']) / 100);
             }
-            array_push($response, $data);
+            $response[] = $data;
         }
         return response()->json(['products' => $response]);
     }
 
-    public function filterProductsBySize1(Request $request)
+    public function filterProductsBySize1(Request $request): ProductCollection
     {
         $length = $request->length;
         $category_name = $request->category_name;
@@ -132,7 +133,7 @@ class FrontendProductController extends Controller
         return new ProductCollection($products);
     }
 
-    public function getRelatedProducts(Product $product)
+    public function getRelatedProducts(Product $product): ProductCollection
     {
         $product->load('categories');
         $cateIDs = [];
@@ -157,10 +158,10 @@ class FrontendProductController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Product $product
+     * @return ProductResource
      */
-    public function getProduct(Product $product)
+    public function getProduct(Product $product): ProductResource
     {
         $product->load('colors.pictures', 'colors.sizes', 'colors');
         return new ProductResource($product);

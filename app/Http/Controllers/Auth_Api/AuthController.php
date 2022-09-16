@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth_Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Gate;
@@ -26,9 +27,9 @@ class AuthController extends Controller
     /**
      * Get a JWT via given credentials.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function login()
+    public function login(): JsonResponse
     {
         $credentials = request(['email', 'password']);
 
@@ -42,9 +43,9 @@ class AuthController extends Controller
     /**
      * Get the authenticated User.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function me(Request $request)
+    public function me(Request $request): JsonResponse
     {
         $loads = [];
         $user = auth('api')->user();
@@ -60,60 +61,12 @@ class AuthController extends Controller
         return response()->json($user->load($loads));
     }
 
-    public function update(Request $request, User $user)
-    {
-        if (Gate::denies('edit_user')) return abort(401);
-        if ($request->oldPsw) {
-            $validator = $this->validate($request, [
-                'name' => 'required',
-                'oldPsw' => 'required',
-                'newPsw' => 'required|same:passwordConfirmation',
-            ]);
-            if (Hash::check($validator['oldPsw'], $user->password)) {
-                $user->update(['name' => $validator['name'], 'password' => Hash::make($validator['newPsw'])]);
-                $user['supplier'] = $user->supplier;
-                $user['role_name'] = $user->roles->pluck('name');
-                return response()->json(['message' => 'Successful update info!', 'user' => $user]);
-            } else {
-                return response()->json(
-                    ['error' => 'Old password not matched.'],
-                    422
-                );
-            }
-        }
-        $validator = $this->validate($request, [
-            'name' => 'required'
-        ]);
-        $user->update(['name' => $validator['name']]);
-        if ($request->avatar) {
-            $file = $request->avatar;
-            $name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-            $extension = $file->getClientOriginalExtension();
-            $type = 'image';
-            $path = $file->storeAs('users/' . $user->id . '/' . $type . '/', $name . '.' . $extension);
-            Log::warning("DJKASHD", ['path' => $path, 'RunHere']);
-            $user->profile()->updateOrCreate(['contact_fname' => $user->name, 'avatar' => $path], ['avatar' => $path]);
-            $user['userAvatarLink'] = $user->profile->avatar;
-        }
-        $loads = [];
-        if ($user->hasRole('customer')) {
-            array_push($loads, 'customer');
-            $user['avatarCustLink'] = asset('storage/customers/' . $user->id . '/');
-        }
-        if ($user->hasRole('supplier')) {
-            array_push($loads, 'supplier');
-            $user['logoSuplLink'] = asset('storage/suppliers/' . $user->id . '/');
-        }
-        $user->load($loads);
-        return response()->json(['message' => 'Successful update info.!', 'user' => $user]);
-    }
-
     /**
      * Log the user out (Invalidate the token).
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function logout()
+    public function logout(): JsonResponse
     {
         // auth('api')->user()->token()->revoke();
         $cookie = Cookie::forget('_token');
@@ -126,9 +79,9 @@ class AuthController extends Controller
     /**
      * Refresh a token.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function refresh()
+    public function refresh(): JsonResponse
     {
         return $this->respondWithToken(auth('api')->refresh());
     }
@@ -136,11 +89,11 @@ class AuthController extends Controller
     /**
      * Get the token array structure.
      *
-     * @param  string $token
+     * @param string $token
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    protected function respondWithToken($token)
+    protected function respondWithToken(string $token): JsonResponse
     {
         $cookie = $this->getCookieDetails($token);
         $user = auth('api')->user();
@@ -157,7 +110,7 @@ class AuthController extends Controller
             ->cookie($cookie['name'], $cookie['value'], $cookie['minutes'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly'], $cookie['samesite']);
     }
 
-    private function getCookieDetails($token)
+    private function getCookieDetails($token): array
     {
         return [
             'name' => '_token',
@@ -172,7 +125,7 @@ class AuthController extends Controller
         ];
     }
 
-    public function guard()
+    public function guard(): \Illuminate\Contracts\Auth\Guard|\Illuminate\Contracts\Auth\StatefulGuard
     {
         return auth()->guard('api');
     }

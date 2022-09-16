@@ -11,7 +11,7 @@ use App\Http\Controllers\{
     SupplierController,
     CustomerController,
     PermissionController,
-    ColorController,
+    ListColorController,
     ShippingListController,
     PaymentListController,
     SizeListController,
@@ -61,7 +61,7 @@ Route::group([
 
 Route::get('fetchOrders/{uid}', [OrderController::class,'fetchOrdersByUserID']);
 
-Route::apiResource('colors', ColorController::class);
+Route::get('colors', ListColorController::class);
 
 Route::get('sizes', SizeListController::class);
 Route::post('register', [AuthController::class,'register']);

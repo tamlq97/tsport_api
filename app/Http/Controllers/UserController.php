@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): UserCollection
     {
         if (Gate::denies('access_user')) {
             return abort(401);
@@ -55,7 +55,8 @@ class UserController extends Controller
         $users = $query->paginate($length);
         return new UserCollection($users);
     }
-    public function show(User $user)
+
+    public function show(User $user): UserResource
     {
         if (Gate::denies('view_user')) {
             return abort(401);
@@ -64,7 +65,8 @@ class UserController extends Controller
         else $user->load('profile');
         return new UserResource($user);
     }
-    public function store(Request $request)
+
+    public function store(Request $request): UserResource
     {
         if (Gate::denies('create_user')) return abort(401);
         $credentials = $request->all();
@@ -73,7 +75,7 @@ class UserController extends Controller
         $roleIDs = [];
         $cus = null;
         foreach ($request->role as $key => $value) {
-            array_push($roleIDs, $value['id']);
+            $roleIDs[] = $value['id'];
             if (array_search('supplier', $value)) {
                 $supplier_code =  strtoupper(substr(md5(microtime()), rand(0, 26), 2)) . substr(md5(microtime()), rand(0, 26), 5);
                 $user->supplier()->create(['email' => $user->email, 'contact_fname' => $user->name, 'supplier_code' => $supplier_code]);
@@ -81,11 +83,11 @@ class UserController extends Controller
         }
         $makh =  strtoupper(substr(md5(microtime()), rand(0, 26), 2)) . substr(md5(microtime()), rand(0, 26), 5);
         $user->customer()->create(['email' => $user->email, 'contact_fname' => $user->name, 'makh' => $makh]);
-        array_push($roleIDs, 4);
+        $roleIDs[] = 4;
         $user->syncRoles($roleIDs);
         return new UserResource($user);
     }
-    public function update(Request $request, User $user)
+    public function update(Request $request, User $user): UserResource
     {
         if (Gate::denies('edit_user')) return abort(401);
         $credentials = $request->all();
@@ -96,7 +98,7 @@ class UserController extends Controller
         $rolesID = [];
 
         foreach ($roles as $key => $value) {
-            array_push($rolesID, $value['id']);
+            $rolesID[] = $value['id'];
 
             if (array_search('supplier', $value)) {
                 if (!$user->supplier) {
@@ -117,24 +119,24 @@ class UserController extends Controller
         }
         $user->syncRoles($rolesID);
         return new UserResource($user);
-//}
-//else {
-//return response()->json(['message'=>'You could not update super admin.'],401);
-//}
+        //}
+        //else {
+            //return response()->json(['message'=>'You could not update super admin.'],401);
+        //}
     }
 
-    public function destroy(User $user)
+    public function destroy(User $user): \Illuminate\Http\JsonResponse
     {
         if (Gate::denies('delete_user')) {
             return abort(401);
         }
-if($user->id !== 1){
-        $user->syncRoles([]);
-        $user->delete();
-        return response()->json("Successfully delete.");
-}
-else{
-return response()->json(['message' => 'Your could not delete super admin account.'],401);
-}
+        if($user->id !== 1){
+            $user->syncRoles([]);
+            $user->delete();
+            return response()->json("Successfully delete.");
+        }
+        else{
+            return response()->json(['message' => 'Your could not delete super admin account.'],401);
+        }
     }
 }

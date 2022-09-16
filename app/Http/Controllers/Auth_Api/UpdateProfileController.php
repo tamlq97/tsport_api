@@ -15,9 +15,9 @@ class UpdateProfileController extends Controller
      * Handle the incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function __invoke(Request $request, User $user)
+    public function __invoke(Request $request, User $user): \Illuminate\Http\JsonResponse
     {
         if (Gate::denies('edit_user')) return abort(401);
         if ($request->oldPsw) {
