@@ -9,6 +9,8 @@ use App\Models\Product;
 use App\Models\Supplier;
 use Carbon\Carbon;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\Factory;
@@ -27,6 +29,7 @@ class AdminDashboard extends Controller
         $data['orders'] = Order::count();
         $data['customers'] = Customer::count();
         $data['suppliers'] = Supplier::count();
+
         if(request()->acceptsJson()) {
             return response()->json(['data' => $data]);
         }
@@ -40,11 +43,8 @@ class AdminDashboard extends Controller
      */
     public function filterCustomerBtwDate(Request $request): Application|Factory|View|JsonResponse
     {
-        $query = Customer::whereBetween('created_at', [Carbon::now()->subDays(30), Carbon::now()]);
-        if ($request->from && $request->to) {
-            $query = $query->whereBetween('created_at', [$request->from, $request->to]);
-        }
-        $customers = $query->paginate($request->length);
+        $customers = $this->getDataFilteredByDateRangePaginateByLength(Customer::getModel(), $request);
+
         if($request->acceptsJson()) {
             return response()->json(['customers' => $customers]);
         }
@@ -52,28 +52,40 @@ class AdminDashboard extends Controller
         return view("welcome");
     }
 
+    /**
+     * @param Model $model
+     * @param Request $request
+     * @return LengthAwarePaginator
+     */
+    protected function getDataFilteredByDateRangePaginateByLength(Model $model,Request $request): LengthAwarePaginator
+    {
+        return $model->when(
+            !($request->from && $request->to),
+            fn($q) => $q->whereBetween('created_at', [Carbon::now()->subDays(30), Carbon::now()])
+        )
+            ->when(($request->from && $request->to), fn($q) => $q->whereBetween('created_at', [$request->from, $request->to]))
+            ->paginate($request->length);
+    }
+
     public function filterSupplierBtwDate(Request $request): Application|Factory|View|JsonResponse
     {
-        $suppliers = DB::table('suppliers')
-            ->whereBetween('created_at', [Carbon::now()->subDays(30), Carbon::now()]);
-        if ($request->from && $request->to) {
-            $suppliers = DB::table('suppliers')
-                ->whereBetween('created_at', [$request->from, $request->to]);
-        }
-        $suppliers = $suppliers->paginate($request->length);
+        $suppliers = $this->getDataFilteredByDateRangePaginateByLength(Supplier::getModel(), $request);
+
         if($request->acceptsJson()) {
             return response()->json(['suppliers' => $suppliers]);
         }
+
         return view('welcome');
     }
 
     public function filterOrderBtwDate(Request $request): Factory|Application|View|JsonResponse
     {
-        $orders = DB::table('orders')
-            ->join('customers', 'customers.id', '=', 'orders.user_id')
-            ->whereBetween('orders.created_at', [$request->from, $request->to])
-            ->select('orders.*', 'customers.email as customer_email');
-        $orders = $orders->paginate($request->length);
+        $orders = Order::join('customers','customers.user_id','=','orders.user_id')
+        ->when(($request->from and $request->to), fn($q) => $q->whereBetween('orders.created_at', [$request->from, $request->to]))
+        ->when(!($request->from && $request->to), fn($q) => $q->whereBetween('orders.created_at',[Carbon::now()->subDays(30), Carbon::now()]))
+        ->select('orders.*', 'customers.email as customer_email')
+        ->paginate($request->length);
+
         if($request->acceptsJson()) {
             return response()->json(['orders' => $orders]);
         }

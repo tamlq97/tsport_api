@@ -3,13 +3,9 @@
 namespace App\Http\Controllers\Auth_Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -33,7 +29,7 @@ class AuthController extends Controller
     {
         $credentials = request(['email', 'password']);
 
-        if (!$token = auth('api')->attempt($credentials)) {
+        if (!$token = $this->guard()->attempt($credentials)) {
             return response()->json(['error' => 'Emaill or password not valid.'], 401);
         }
         return $this->respondWithToken($token);
@@ -48,13 +44,13 @@ class AuthController extends Controller
     public function me(Request $request): JsonResponse
     {
         $loads = [];
-        $user = auth('api')->user();
+        $user = $this->guard()->user();
         if ($user->hasRole('customer')) {
-            array_push($loads, 'customer');
+            $loads[] = 'customer';
             $user['avatarLink'] = asset('storage/customers/' . $user->id . '/');
         }
         if ($user->hasRole('supplier')) {
-            array_push($loads, 'supplier');
+            $loads[] = 'supplier';
             $user['logoLink'] = asset('storage/suppliers/' . $user->id . '/');
         }
         $user['userAvatarLink'] = asset('storage/users/' . $user->id . '/image/');
@@ -68,9 +64,8 @@ class AuthController extends Controller
      */
     public function logout(): JsonResponse
     {
-        // auth('api')->user()->token()->revoke();
         $cookie = Cookie::forget('_token');
-        auth('api')->logout();
+        $this->guard()->logout();
 
 
         return response()->json(['message' => 'Successfully logged out'])->withCookie($cookie);
@@ -83,7 +78,7 @@ class AuthController extends Controller
      */
     public function refresh(): JsonResponse
     {
-        return $this->respondWithToken(auth('api')->refresh());
+        return $this->respondWithToken($this->guard()->refresh());
     }
 
     /**
@@ -96,7 +91,7 @@ class AuthController extends Controller
     protected function respondWithToken(string $token): JsonResponse
     {
         $cookie = $this->getCookieDetails($token);
-        $user = auth('api')->user();
+        $user = $this->guard()->user();
 
         $user['supplier'] = $user->supplier;
         $user['role_name'] = $user->roles->pluck('name');
@@ -104,8 +99,7 @@ class AuthController extends Controller
             'access_token' => $token,
             'token_type' => 'bearer',
             'user' => $user,
-            'expires_in' => auth('api')->factory()->getTTL() * 60
-            // 'expires_in' => auth('api')->factory()->getTTL()
+            'expires_in' => $this->guard()->factory()->getTTL() * 60
         ])
             ->cookie($cookie['name'], $cookie['value'], $cookie['minutes'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly'], $cookie['samesite']);
     }

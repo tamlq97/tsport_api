@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -41,6 +42,9 @@ class AppServiceProvider extends ServiceProvider
                 ]
             );
         });
+
+        \Auth::shouldUse('api');
+        \Gate::after(fn(User $user, $ability) => $user->hasRole('admin'));
         // DB::listen(function ($query) {
         //     Log::info(
         //         $query->sql,

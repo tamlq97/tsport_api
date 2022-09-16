@@ -14,7 +14,7 @@ class AddPhoneColumnToShippingsTable extends Migration
     public function up()
     {
         Schema::table('shippings', function (Blueprint $table) {
-           $table->string('phone')->nullable(); 
+           $table->string('phone')->nullable();
         });
     }
 
@@ -25,7 +25,7 @@ class AddPhoneColumnToShippingsTable extends Migration
      */
     public function down()
     {
-        Schema::table('shippings', function (Blueprint $table) {
+        Schema::whenTableHasColumn('shippings','phone', function (Blueprint $table) {
             $table->dropColumn('phone');
         });
     }

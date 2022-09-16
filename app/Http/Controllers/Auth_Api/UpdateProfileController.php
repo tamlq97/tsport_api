@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Auth_Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\User\User;
+use App\Http\Requests\UpdateUserProfileRequest;
+use App\Models\User;
+use App\Models\UserDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 
 class UpdateProfileController extends Controller
 {
@@ -17,17 +18,13 @@ class UpdateProfileController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function __invoke(Request $request, User $user): \Illuminate\Http\JsonResponse
+    public function __invoke(UpdateUserProfileRequest $request, User $user): \Illuminate\Http\JsonResponse
     {
         if (Gate::denies('edit_user')) return abort(401);
-        if ($request->oldPsw) {
-            $validator = $this->validate($request, [
-                'name' => 'required',
-                'oldPsw' => 'required',
-                'newPsw' => 'required|same:passwordConfirmation',
-            ]);
-            if (Hash::check($validator['oldPsw'], $user->password)) {
-                $user->update(['name' => $validator['name'], 'password' => Hash::make($validator['newPsw'])]);
+        $data = $request->validated();
+        if($request->filled('oldPsw')) {
+            if (Hash::check($data['oldPsw'], $user->password)) {
+                $user->update(['name' => $data['name'], 'password' => Hash::make($data['newPsw'])]);
                 $user['supplier'] = $user->supplier;
                 $user['role_name'] = $user->roles->pluck('name');
                 return response()->json(['message' => 'Successful update info!', 'user' => $user]);
@@ -38,27 +35,24 @@ class UpdateProfileController extends Controller
                 );
             }
         }
-        $validator = $this->validate($request, [
-            'name' => 'required'
-        ]);
-        $user->update(['name' => $validator['name']]);
+
+        $user->update(['name' => $data['name']]);
         if ($request->avatar) {
             $file = $request->avatar;
             $name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
             $extension = $file->getClientOriginalExtension();
             $type = 'image';
             $path = $file->storeAs('users/' . $user->id . '/' . $type . '/', $name . '.' . $extension);
-            Log::warning("DJKASHD", ['path' => $path, 'RunHere']);
             $user->profile()->updateOrCreate(['contact_fname' => $user->name, 'avatar' => $path], ['avatar' => $path]);
             $user['userAvatarLink'] = $user->profile->avatar;
         }
         $loads = [];
         if ($user->hasRole('customer')) {
-            array_push($loads, 'customer');
+            $loads[] = 'customer';
             $user['avatarCustLink'] = asset('storage/customers/' . $user->id . '/');
         }
         if ($user->hasRole('supplier')) {
-            array_push($loads, 'supplier');
+            $loads[] = 'supplier';
             $user['logoSuplLink'] = asset('storage/suppliers/' . $user->id . '/');
         }
         $user->load($loads);
