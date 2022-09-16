@@ -29,7 +29,8 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `categories` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `slug` varchar(256) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -56,7 +57,8 @@ INSERT INTO `categories` (`id`, `name`, `description`, `slug`, `_lft`, `_rgt`, `
 --
 
 CREATE TABLE `colors` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -223,7 +225,8 @@ INSERT INTO `colors` (`id`, `name`, `created_at`, `updated_at`) VALUES
 --
 
 CREATE TABLE `color_product` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `color_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `product_id` bigint(20) UNSIGNED NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -237,7 +240,8 @@ CREATE TABLE `color_product` (
 --
 
 CREATE TABLE `color_products` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `product_id` bigint(20) UNSIGNED NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -988,7 +992,8 @@ INSERT INTO `color_products` (`id`, `name`, `product_id`, `created_at`, `updated
 --
 
 CREATE TABLE `color_product_pictures` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `src` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -5389,7 +5394,8 @@ CREATE TABLE `color_size` (
 --
 
 CREATE TABLE `color_sizes` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `quantity` int(11) DEFAULT NULL,
   `color_id` bigint(20) UNSIGNED DEFAULT NULL,
@@ -8950,7 +8956,8 @@ INSERT INTO `color_sizes` (`id`, `name`, `quantity`, `color_id`, `created_at`, `
 --
 
 CREATE TABLE `customers` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `makh` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `contact_fname` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `contact_lname` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -8983,7 +8990,8 @@ INSERT INTO `customers` (`id`, `makh`, `contact_fname`, `contact_lname`, `addres
 --
 
 CREATE TABLE `employees` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `name` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `address` varchar(256) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `city` varchar(15) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -9003,7 +9011,8 @@ CREATE TABLE `employees` (
 --
 
 CREATE TABLE `failed_jobs` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -9041,7 +9050,8 @@ INSERT INTO `failed_jobs` (`id`, `connection`, `queue`, `payload`, `exception`, 
 --
 
 CREATE TABLE `jobs` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `queue` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `attempts` tinyint(3) UNSIGNED NOT NULL,
@@ -9251,7 +9261,8 @@ INSERT INTO `notifications` (`id`, `type`, `notifiable_type`, `notifiable_id`, `
 --
 
 CREATE TABLE `orders` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `madh` varchar(7) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `user_id` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `payment_id` int(11) DEFAULT NULL,
@@ -9303,7 +9314,8 @@ INSERT INTO `orders` (`id`, `madh`, `user_id`, `payment_id`, `order_date`, `requ
 --
 
 CREATE TABLE `order_details` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `order_id` bigint(20) UNSIGNED DEFAULT NULL,
   `product_id` bigint(20) UNSIGNED DEFAULT NULL,
   `price` int(11) DEFAULT NULL,
@@ -9422,7 +9434,8 @@ CREATE TABLE `password_resets` (
 --
 
 CREATE TABLE `payments` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `payment_type` varchar(40) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `allowed` tinyint(1) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -9443,7 +9456,8 @@ INSERT INTO `payments` (`id`, `payment_type`, `allowed`, `created_at`, `updated_
 --
 
 CREATE TABLE `permissions` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `guard_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -9510,7 +9524,8 @@ INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at
 --
 
 CREATE TABLE `personal_access_tokens` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `tokenable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tokenable_id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -9528,7 +9543,8 @@ CREATE TABLE `personal_access_tokens` (
 --
 
 CREATE TABLE `products` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `masp` varchar(7) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `product_name` varchar(256) COLLATE utf8mb4_unicode_ci NOT NULL,
   `product_description` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -11211,7 +11227,8 @@ INSERT INTO `product_category` (`product_id`, `sub_category_id`) VALUES
 --
 
 CREATE TABLE `product_color_size_quantity` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `quantity` int(11) NOT NULL,
   `product_id` bigint(20) UNSIGNED NOT NULL,
   `color_id` bigint(20) UNSIGNED NOT NULL,
@@ -11227,7 +11244,8 @@ CREATE TABLE `product_color_size_quantity` (
 --
 
 CREATE TABLE `product_details` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `product_id` bigint(20) UNSIGNED DEFAULT NULL,
   `color` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `size` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -11253,7 +11271,8 @@ CREATE TABLE `product_size` (
 --
 
 CREATE TABLE `roles` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `guard_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -11369,7 +11388,8 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 --
 
 CREATE TABLE `shippings` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `shipping_type` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `phone` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -11392,7 +11412,8 @@ INSERT INTO `shippings` (`id`, `shipping_type`, `phone`, `created_at`, `updated_
 --
 
 CREATE TABLE `sizes` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -11416,7 +11437,8 @@ INSERT INTO `sizes` (`id`, `name`, `created_at`, `updated_at`) VALUES
 --
 
 CREATE TABLE `sub_categories` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `category_id` bigint(20) UNSIGNED NOT NULL,
@@ -11470,7 +11492,8 @@ INSERT INTO `sub_categories` (`id`, `name`, `description`, `category_id`, `_lft`
 --
 
 CREATE TABLE `suppliers` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `supplier_code` varchar(7) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `company_name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `contact_fname` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -11516,7 +11539,8 @@ INSERT INTO `suppliers` (`id`, `supplier_code`, `company_name`, `contact_fname`,
 --
 
 CREATE TABLE `users` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
@@ -11545,7 +11569,8 @@ INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `re
 --
 
 CREATE TABLE `user_details` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+primary key (id),
   `contact_fname` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `contact_lname` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
