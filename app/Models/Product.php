@@ -8,6 +8,63 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * App\Models\Product
+ *
+ * @property int $id
+ * @property string|null $masp
+ * @property string $product_name
+ * @property string|null $product_description
+ * @property int|null $supplier_id
+ * @property int|null $product_price
+ * @property int|null $available_size
+ * @property int|null $available_colors
+ * @property int|null $discount
+ * @property int|null $product_available
+ * @property int|null $discount_available
+ * @property int|null $current_order
+ * @property string|null $picture
+ * @property string|null $second_image
+ * @property int|null $ranking
+ * @property string|null $note
+ * @property string|null $slug
+ * @property int|null $category_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Kalnoy\Nestedset\Collection|\App\Models\SubCategory[] $categories
+ * @property-read int|null $categories_count
+ * @property-read \App\Models\SubCategory|null $category
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ColorProduct[] $colors
+ * @property-read int|null $colors_count
+ * @property-read \App\Models\Category|null $mainCate
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ColorProductPicture[] $pictures
+ * @property-read int|null $pictures_count
+ * @property-read \App\Models\Supplier|null $supplier
+ * @method static \Illuminate\Database\Eloquent\Builder|Product newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Product newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Product query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereAvailableColors($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereAvailableSize($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereCurrentOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereDiscount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereDiscountAvailable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereMasp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product wherePicture($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereProductAvailable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereProductDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereProductName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereProductPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereRanking($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereSecondImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereSupplierId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Product extends Model
 {
     protected $fillable = [

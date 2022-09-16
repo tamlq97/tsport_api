@@ -40,13 +40,11 @@ class AdminDashboard extends Controller
      */
     public function filterCustomerBtwDate(Request $request): Application|Factory|View|JsonResponse
     {
-        $customers = DB::table('customers')
-            ->whereBetween('created_at', [Carbon::now()->subDays(30), Carbon::now()]);
+        $query = Customer::whereBetween('created_at', [Carbon::now()->subDays(30), Carbon::now()]);
         if ($request->from && $request->to) {
-            $customers = DB::table('customers')
-                ->whereBetween('created_at', [$request->from, $request->to]);
+            $query = $query->whereBetween('created_at', [$request->from, $request->to]);
         }
-        $customers = $customers->paginate($request->length);
+        $customers = $query->paginate($request->length);
         if($request->acceptsJson()) {
             return response()->json(['customers' => $customers]);
         }

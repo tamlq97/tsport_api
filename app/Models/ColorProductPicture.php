@@ -5,6 +5,33 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * App\Models\ColorProductPicture
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $src
+ * @property string $type
+ * @property string $extension
+ * @property int $color_id
+ * @property int $product_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Product|null $product
+ * @method static \Illuminate\Database\Eloquent\Builder|ColorProductPicture newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ColorProductPicture newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ColorProductPicture query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ColorProductPicture whereColorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ColorProductPicture whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ColorProductPicture whereExtension($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ColorProductPicture whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ColorProductPicture whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ColorProductPicture whereProductId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ColorProductPicture whereSrc($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ColorProductPicture whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ColorProductPicture whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class ColorProductPicture extends Model
 {
     protected $fillable = ['name', 'src', 'type', 'extension', 'color_id', 'product_id'];
