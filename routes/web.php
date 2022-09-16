@@ -52,6 +52,8 @@ Route::get('/{product}', function (Product $product) {
     return $products;
 });
 
+Route::get("suppliers/{supplier:supplier_code}", [\App\Http\Controllers\SupplierController::class,'show']);
+
 Route::get('craw', function () {
     $url = 'https://www.gymshark.com/products/gymshark-premium-baselayer-shorts-light-grey';
     // $crawler = GoutteFacade::request('get', env('GYM_SHARK') . $url);

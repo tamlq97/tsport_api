@@ -8,7 +8,7 @@ use App\Http\Resources\Product\ProductCollection;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
-class ProductController extends Controller
+class FrontendProductController extends Controller
 {
     /**
      * Display a listing of the resource.

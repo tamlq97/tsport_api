@@ -6,11 +6,16 @@ use App\Models\UserDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
-class UserDetailController extends Controller
+class UpdateUserDetailController extends Controller
 {
-    public function update(Request $request,$userDetaiId)
+    /**
+     * Handle the incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function __invoke(Request $request,UserDetail $userDetail)
     {
-        $userDetail = UserDetail::find($userDetaiId);
         if(Gate::denies('edit_user')) abort(401);
         $credentials = $this->validate($request,[
             'contact_fname' => 'required',
@@ -24,4 +29,3 @@ class UserDetailController extends Controller
         return response()->json(['message' => 'Successful update profile']);
     }
 }
-;

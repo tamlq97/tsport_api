@@ -117,10 +117,9 @@ class OrderController extends Controller
         Notification::locale('vi_VN')->send($users, new OrderSuccessNotification($order));
         return response()->json(['message' => 'Successful order. Check your mail.', 'order_id' => $order->id]);
     }
-    public function delete($madh)
+    public function destroy(Order $order)
     {
         if (Gate::denies('delete_order')) abort(401);
-        $order = Order::where('madh', $madh)->first();
         $order->delete();
         return response()->json(['message' => 'Success delete order.']);
     }

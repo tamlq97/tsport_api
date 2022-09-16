@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Http\Resources\Product\Product as ProductResource;
 use App\Http\Resources\Product\ProductCollection;
 use App\Models\ColorProduct;
 use App\Models\ColorSize;
 use App\Models\Product;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 
@@ -15,6 +15,7 @@ class ProductController extends Controller
 {
     public static $image_ext = ['jpg', 'jpe', 'web', 'jpeg', 'png', 'gif'];
     public static $video_ext = ['mp4', 'mpeg'];
+
     public function getType($ext)
     {
         if (in_array($ext, self::$image_ext)) {
@@ -33,7 +34,7 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        if (Gate::denies("access_product"));
+        if (Gate::denies("access_product")) return abort(401);
         if ($request->showData) {
             return Product::with(['colors', 'colors.pictures', 'colors.sizes', 'supplier'])->orderBy('created_at')->paginate(50);
         }
@@ -71,13 +72,13 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(\Illuminate\Http\Request $request)
     {
         if (Gate::denies("create_product")) return abort(401);
-        $validateFields =  [
+        $validateFields = [
             'product_name' => 'required|max:190',
             'product_price' => 'required|min:0',
             'product_description' => 'required',
@@ -118,7 +119,7 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Product  $product
+     * @param \App\Models\Product $product
      * @return \Illuminate\Http\Response
      */
     public function show(Product $product)
@@ -131,15 +132,15 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Product  $product
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Product $product
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Product $product)
     {
         if (Gate::denies("edit_product")) return abort(401);
 
-        $validateFields =  [
+        $validateFields = [
             'product_name' => 'required|max:190',
             'product_price' => 'required|min:0',
             'product_description' => 'required',
@@ -177,7 +178,7 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Product  $product
+     * @param \App\Models\Product $product
      * @return \Illuminate\Http\Response
      */
     public function destroy(Product $product)
@@ -199,6 +200,7 @@ class ProductController extends Controller
 
         return response()->json(['message' => 'Successfully product deleted.']);
     }
+
     public function deleteItems(Request $request)
     {
         $items = $request->validate(['items' => 'array|required']);
@@ -223,4 +225,5 @@ class ProductController extends Controller
         $product->update(['product_available' => $request->product_available]);
         return response()->json(['message' => "Successfully update product status!"]);
     }
+    //
 }

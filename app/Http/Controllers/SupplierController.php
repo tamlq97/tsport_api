@@ -96,8 +96,9 @@ class SupplierController extends Controller
      * @param  \App\Models\Supplier  $supplier
      * @return \Illuminate\Http\Response
      */
-    public function show($userID)
+    public function show(Supplier $supplier)
     {
+        return $supplier;
         if (Gate::denies("view_supplier")) return abort(401);
         return response()->json(['data' => 'something']);
         // $supplier = Supplier::where('user_id', $userID)->get();
