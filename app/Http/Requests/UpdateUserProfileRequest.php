@@ -25,8 +25,7 @@ class UpdateUserProfileRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'oldPsw' => $this->whenFilled('oldPsw', fn() => 'required'),
-            'newPsw' => $this->whenFilled('oldPsw', fn() => ['required', 'same:passwordConfirmation'])
+            'email' => ['required', 'email', 'unique:users,email,'. $this->user->id]
         ];
     }
 }

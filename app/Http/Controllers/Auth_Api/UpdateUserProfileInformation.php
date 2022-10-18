@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 
-class UpdateProfileController extends Controller
+class UpdateUserProfileInformation extends Controller
 {
     /**
      * Handle the incoming request.
@@ -22,30 +22,12 @@ class UpdateProfileController extends Controller
     {
         if (Gate::denies('edit_user')) return abort(401);
         $data = $request->validated();
-        if($request->filled('oldPsw')) {
-            if (Hash::check($data['oldPsw'], $user->password)) {
-                $user->update(['name' => $data['name'], 'password' => Hash::make($data['newPsw'])]);
-                $user['supplier'] = $user->supplier;
-                $user['role_name'] = $user->roles->pluck('name');
-                return response()->json(['message' => 'Successful update info!', 'user' => $user]);
-            } else {
-                return response()->json(
-                    ['error' => 'Old password not matched.'],
-                    422
-                );
-            }
-        }
 
         $user->update(['name' => $data['name']]);
-        if ($request->avatar) {
-            $file = $request->avatar;
-            $name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-            $extension = $file->getClientOriginalExtension();
-            $type = 'image';
-            $path = $file->storeAs('users/' . $user->id . '/' . $type . '/', $name . '.' . $extension);
-            $user->profile()->updateOrCreate(['contact_fname' => $user->name, 'avatar' => $path], ['avatar' => $path]);
-            $user['userAvatarLink'] = $user->profile->avatar;
+        if($request->file('avatar')) {
+            $user->storeFile($request->file('avatar'));
         }
+
         $loads = [];
         if ($user->hasRole('customer')) {
             $loads[] = 'customer';

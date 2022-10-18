@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth_Api\{
     AuthController,
-    UpdateProfileController
+    UpdateUserProfileInformation
 };
 use App\Http\Controllers\{
     CategoryController,
@@ -39,7 +39,7 @@ Route::group([
 ], function () {
     Route::post('login',[AuthController::class,'login'])->name('login');
     Route::get('logout', [AuthController::class, 'logout']);
-    Route::put('update/{user}', UpdateProfileController::class);
+    Route::put('update/{user}', UpdateUserProfileInformation::class);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
 });
