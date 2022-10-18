@@ -111,14 +111,4 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasOne('App\Models\Customer', 'user_id', 'id');
     }
-
-    public function storeAvatar(UploadedFile $file): User {
-        $name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $extension = $file->getClientOriginalExtension();
-        $type = 'image';
-        $path = $file->storeAs('users/' . $this->id . '/' . $type . '/', $name . '.' . $extension);
-        $this->profile()->updateOrCreate(['contact_fname' => $this->name, 'avatar' => $path], ['avatar' => $path]);
-        $this['userAvatarLink'] = $this->profile->avatar;
-        return $this;
-    }
 }
