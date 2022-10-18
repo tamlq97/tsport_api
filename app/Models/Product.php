@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
  * App\Models\Product
  *
  * @property int $id
- * @property string|null $masp
+ * @property string $masp
  * @property string $product_name
  * @property string|null $product_description
  * @property int|null $supplier_id

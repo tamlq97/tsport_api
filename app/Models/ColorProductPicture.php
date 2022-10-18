@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Storage;
  * @property int $product_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Product|null $product
+ * @property-read \App\Models\Product $product
  * @method static \Illuminate\Database\Eloquent\Builder|ColorProductPicture newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ColorProductPicture newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ColorProductPicture query()

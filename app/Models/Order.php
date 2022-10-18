@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
  * App\Models\Order
  *
  * @property int $id
- * @property string|null $madh
+ * @property string $madh
  * @property string|null $user_id
  * @property int|null $payment_id
  * @property string|null $order_date

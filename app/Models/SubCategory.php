@@ -12,15 +12,15 @@ use Kalnoy\Nestedset\NodeTrait;
  * @property string $name
  * @property string|null $description
  * @property int $category_id
+ * @property string|null $slug
  * @property int $_lft
  * @property int $_rgt
  * @property int|null $parent_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $slug
  * @property-read \Kalnoy\Nestedset\Collection|SubCategory[] $children
  * @property-read int|null $children_count
- * @property-read \App\Models\Category|null $parent
+ * @property-read \App\Models\Category $parent
  * @method static \Kalnoy\Nestedset\Collection|static[] all($columns = ['*'])
  * @method static \Kalnoy\Nestedset\QueryBuilder|SubCategory ancestorsAndSelf($id, array $columns = [])
  * @method static \Kalnoy\Nestedset\QueryBuilder|SubCategory ancestorsOf($id, array $columns = [])

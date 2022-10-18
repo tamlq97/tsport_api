@@ -8,17 +8,17 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\UserDetail
  *
  * @property int $id
- * @property string $contact_fname
- * @property string $contact_lname
- * @property string $address
- * @property string $city
- * @property string $country
- * @property string $phone
+ * @property string|null $contact_fname
+ * @property string|null $contact_lname
+ * @property string|null $address
+ * @property string|null $city
+ * @property string|null $country
+ * @property string|null $phone
+ * @property string|null $avatar
  * @property int $user_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $avatar
- * @property-read \App\Models\User|null $user
+ * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|UserDetail newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserDetail newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserDetail query()
